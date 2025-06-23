@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from "axios";
+import { password } from "pg/lib/defaults";
 
 function Login({updateUserDetails}) {
     const [formData, setFormData] = useState({
@@ -36,18 +38,27 @@ function Login({updateUserDetails}) {
         return isValid;
     };
 
-    const handelSubmit = (e) => {
+    const handelSubmit = async (e) => {
         e.preventDefault();
 
         if (validate()) {
-            if (formData.username === 'admin' && formData.password === 'admin') {
-                updateUserDetails({
-                    name: 'John Cena',
-                    email: 'john@cena.com'
-                });
-                setMessage('Valid Credentials');
-            } else {
-                setMessage('Invalid Credentials');
+            // Data to be sent to the server
+
+            const body = {
+                username: formData.username,
+                password: formData.password
+            };
+            const config = {
+                // Tells axios to include cookie in the request + some other auth headers
+                withCredentials: true
+            };
+            try {
+                const response = await axios.post('http://localhost:5001/auth/login', body, config);
+
+                updateUserDetails(response.data.user);
+            } catch (error) {
+                console.log(error);
+                setErrors({ message: "Something went wrong, please try again"});
             }
         }
     };
@@ -55,6 +66,7 @@ function Login({updateUserDetails}) {
     return(
         <div class="container-fluid text-center">
             {message && (message)}
+            {errors.message && (errors.message)}
             <h1>Login Page</h1>
             <form onSubmit={handelSubmit}>
                 <div>
