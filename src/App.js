@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Home } from "./Home.js";
+import Home from "./Home.js";
 import { Login } from "./Login.js";
 import AppLayout from "./layout/AppLayout.js";
 import Dashboard from "./pages/Dashboard.js";
@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Error from "./pages/Error";
 import Logout from "./pages/Logout.js";
-import { useState } from "react";
 
 function App() {
   const [userDetails, setUserDetails] = useState(null);
