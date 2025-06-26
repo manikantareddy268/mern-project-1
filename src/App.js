@@ -9,6 +9,7 @@ import Error from "./pages/Error";
 import Logout from "./pages/Logout.js";
 import { serverEndpoint } from "./config.js";
 import { useDispatch, useSelector } from "react-redux";
+import { SET_USER } from "./redux/user/actions";
 
 function App() {
   // const [useDetails, setUserDetails] = useState(null);
@@ -22,7 +23,7 @@ function App() {
       });
       // updateUserDetails(response.data.user);
       dispatch({
-        type: 'SET_USER',
+        type: SET_USER,
         payload: response.data.user
       });
     } catch (error) {

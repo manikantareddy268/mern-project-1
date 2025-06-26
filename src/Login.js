@@ -3,6 +3,7 @@ import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { serverEndpoint } from "./config";
 import { useDispatch } from "react-redux";
+import { SET_USER } from "./redux/user/actions";
 
 function Login() {
     const dispatch = useDispatch();
@@ -58,7 +59,7 @@ function Login() {
             try {
                 const response = await axios.post(`${serverEndpoint}/auth/login`, body, config);
                 dispatch({
-                    type: 'SET_USER',
+                    type: SET_USER,
                     payload: response.data.user
                 });
             } catch (error) {
@@ -76,7 +77,7 @@ function Login() {
                 withCredentials: true
             });
             dispatch({
-                type: 'SET_USER',
+                type: SET_USER,
                 payload: response.data.user
             });
         } catch (error) {

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { serverEndpoint } from "../config";
 import { useDispatch } from "react-redux";
+import { CLEAR_USER } from "./redux/user/actions";
 
 function Logout() {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ function Logout() {
                 withCredentials: true
             });
             dispatch({
-                type: 'CLEAR_USER'
+                type: CLEAR_USER
             });
         } catch (error) {
             console.log(error);
