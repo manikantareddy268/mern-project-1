@@ -7,20 +7,24 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Error from "./pages/Error";
 import Logout from "./pages/Logout.js";
+import { serverEndpoint } from "./config.js";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
-  const [userDetails, setUserDetails] = useState(null);
-
-  const updateUserDetails = (updatedUserDetails) => {
-    setUserDetails(updatedUserDetails);
-  };
+  // const [useDetails, setUserDetails] = useState(null);
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state) => state.userDetails); 
 
   const isUserLoggedIn = async () => {
     try {
-      const response = await axios.post('http://localhost:5001/auth/is-user-logged-in', {}, {
+      const response = await axios.post(`${serverEndpoint}/auth/is-user-logged-in`, {}, {
         withCredentials: true
       });
-      updateUserDetails(response.data.user);
+      // updateUserDetails(response.data.user);
+      dispatch({
+        type: 'SET_USER',
+        payload: response.data.user
+      });
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +45,7 @@ function App() {
       <Route path="/login" element={userDetails ?
         <Navigate to="/dashboard" /> :
         <AppLayout>
-          <Login updateUserDetails={updateUserDetails} />
+          <Login />
         </AppLayout>} 
       />
       <Route path="/dashboard" 
@@ -50,7 +54,7 @@ function App() {
       />
 
       <Route path="/logout" element={userDetails ?
-        <Logout updateUserDetails={updateUserDetails} /> :
+        <Logout /> :
         <Navigate to="/login" />}
       />
 

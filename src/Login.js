@@ -1,8 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { serverEndpoint } from "./config";
+import { useDispatch } from "react-redux";
 
-function Login({updateUserDetails}) {
+function Login() {
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -53,24 +56,29 @@ function Login({updateUserDetails}) {
                 withCredentials: true
             };
             try {
-                const response = await axios.post('http://localhost:5001/auth/login', body, config);
-
-                updateUserDetails(response.data.user);
+                const response = await axios.post(`${serverEndpoint}/auth/login`, body, config);
+                dispatch({
+                    type: 'SET_USER',
+                    payload: response.data.user
+                });
             } catch (error) {
                 console.log(error);
-                setErrors({ message: "Something went wrong, please try again"});
+                setErrors({ message: "Something went wrong, please try again" });
             }
         }
     };
 
     const handleGoogleSuccess = async (authResponse) => {
         try {
-            const response = await axios.post('http://localhost:5001/auth/google-auth', {
+            const response = await axios.post(`${serverEndpoint}/auth/google-auth`, {
                 idToken: authResponse.credential
             }, {
                 withCredentials: true
             });
-            updateUserDetails(response.data.user);
+            dispatch({
+                type: 'SET_USER',
+                payload: response.data.user
+            });
         } catch (error) {
             console.log(error);
             setErrors({ message: 'Error processing google auth, please try again' });
