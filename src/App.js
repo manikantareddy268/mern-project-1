@@ -1,15 +1,17 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./Home.js";
-import { Login } from "./Login.js";
+import Home from "./pages/Home.js";
+import Login from "./pages/Login.js";
 import AppLayout from "./layout/AppLayout.js";
 import Dashboard from "./pages/Dashboard.js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import Error from "./pages/Error";
 import Logout from "./pages/Logout.js";
-import { serverEndpoint } from "./config.js";
+import { serverEndpoint } from "./config/config";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_USER } from "./redux/user/actions";
+import UserLayout from "./layout/UserLayout";
+import Register from "./pages/Register";
 
 function App() {
   // const [useDetails, setUserDetails] = useState(null);
@@ -38,17 +40,27 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={userDetails ? 
-        <Navigate to="/dashboard" /> :
+        <UserLayout>
+          <Navigate to='/dashboard' />
+        </UserLayout> :
         <AppLayout>
           <Home />
         </AppLayout>} 
       />
       <Route path="/login" element={userDetails ?
-        <Navigate to="/dashboard" /> :
+        <UserLayout>
+          <Dashboard />
+        </UserLayout> :
         <AppLayout>
           <Login />
         </AppLayout>} 
       />
+      <Route path="/register" element={userDetails ?
+        <Navigate to='/dashboard' /> :
+        <AppLayout>
+          <Register />
+        </AppLayout>
+      } />
       <Route path="/dashboard" 
         element={userDetails ? <Dashboard /> :
         <Navigate to="/login" />}
@@ -60,7 +72,9 @@ function App() {
       />
 
       <Route path="/error" element={userDetails ?
-        <Error /> :
+        <UserLayout>
+          <Error />
+        </UserLayout> :
         <AppLayout><Error /></AppLayout>}
         />
     </Routes>

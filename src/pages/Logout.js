@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { serverEndpoint } from "../config";
+import { serverEndpoint } from "../config/config";
 import { useDispatch } from "react-redux";
-import { CLEAR_USER } from "./redux/user/actions";
+import { CLEAR_USER } from "../redux/user/actions";
 
 function Logout() {
     const navigate = useNavigate();
