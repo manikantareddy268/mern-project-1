@@ -147,7 +147,16 @@ function LinksDashboard() {
 
     const columns = [
         { field: 'campaignTitle', headerName: 'Campaign', flex: 2 },
-        { field: 'originalUrl', headerName: 'URL',flex: 3 },
+        { field: 'originalUrl', headerName: 'URL',flex: 3, renderCell: (params) => (
+            <>
+                <a href={`${serverEndpoint}/links/r/${params.row._id}`}
+                    target='_blank'
+                    rel="noopener noreferrer"
+                >
+                    {params.row.originalUrl}
+                </a>
+            </>
+         )},
         { field: 'category', headerName: 'Category', flex: 2 },
         { field: 'clickCount', headerName: 'Clicks', flex: 1 },
         {
@@ -283,7 +292,7 @@ function LinksDashboard() {
                     >
                         Delete
                     </button>
-                    
+
                 </Modal.Footer>
             </Modal>
         </div>

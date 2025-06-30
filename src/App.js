@@ -3,7 +3,7 @@ import Home from "./pages/Home.js";
 import Login from "./pages/Login.js";
 import AppLayout from "./layout/AppLayout.js";
 import Dashboard from "./pages/Dashboard.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Error from "./pages/Error";
 import Logout from "./pages/Logout.js";
@@ -12,11 +12,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { SET_USER } from "./redux/user/actions";
 import UserLayout from "./layout/UserLayout";
 import Register from "./pages/Register";
+import { Spinner } from "react-bootstrap";
 
 function App() {
   // const [useDetails, setUserDetails] = useState(null);
   const dispatch = useDispatch();
-  const userDetails = useSelector((state) => state.userDetails); 
+  const userDetails = useSelector((state) => state.userDetails);
+  const [loading, setLoading] = useState(true);
 
   const isUserLoggedIn = async () => {
     try {
@@ -30,12 +32,18 @@ function App() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     isUserLoggedIn();
   }, []);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <Routes>
