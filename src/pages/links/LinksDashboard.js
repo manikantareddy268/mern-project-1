@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { serverEndpoint } from '../../config/config';
 import { Modal } from 'react-bootstrap';
+import { usePermission } from '../../rbac/userPermissions';
 
 function LinksDashboard() {
     const [errors, setErrors] = useState({});
@@ -15,6 +16,7 @@ function LinksDashboard() {
     const [isEdit, setIsEdit] = useState(false);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const permission = usePermission();
 
     const handleShowDeleteModal = (linkId) => {
         setFormData({
@@ -147,27 +149,34 @@ function LinksDashboard() {
 
     const columns = [
         { field: 'campaignTitle', headerName: 'Campaign', flex: 2 },
-        { field: 'originalUrl', headerName: 'URL',flex: 3, renderCell: (params) => (
-            <>
-                <a href={`${serverEndpoint}/links/r/${params.row._id}`}
-                    target='_blank'
-                    rel="noopener noreferrer"
-                >
-                    {params.row.originalUrl}
-                </a>
-            </>
-         )},
+        {
+            field: 'originalUrl', headerName: 'URL', flex: 3, renderCell: (params) => (
+                <>
+                    <a href= {`${serverEndpoint}/links/r/${params.row._id}`}
+                        target='_blank'
+                        rel="noopener noreferrer"
+                    >
+                        {params.row.originalUrl}
+                    </a>
+                </>
+            )
+        },
         { field: 'category', headerName: 'Category', flex: 2 },
         { field: 'clickCount', headerName: 'Clicks', flex: 1 },
         {
             field: 'action', headerName: 'Clicks', flex: 1, renderCell: (params) => (
                 <>
-                    <IconButton>
-                        <EditIcon onClick={() => handleOpenModal(true, params.row)} />
-                    </IconButton>
-                    <IconButton>
-                        <DeleteIcon onClick={() => handleShowDeleteModal(params.row._id)} />
-                    </IconButton>
+                    {permission.canEditLink && (
+                        <IconButton>
+                            <EditIcon onClick={() => handleOpenModal(true, params.row)} />
+                        </IconButton>
+                    )}
+
+                    {permission.canDeleteLink && (
+                        <IconButton>
+                            <DeleteIcon onClick={() => handleShowDeleteModal(params.row._id)} />
+                        </IconButton>
+                    )}
                 </>
             )
         },
@@ -177,9 +186,11 @@ function LinksDashboard() {
         <div className="container py-4">
             <div className="d-flex justify-content-between mb-3">
                 <h2>Manage Affiliate Links</h2>
-                <button className="btn btn-primary btn-sm" onClick={() => handleOpenModal(false)}>
-                    Add
-                </button>
+                {permission.canAddLink && (
+                    <button className="btn btn-primary btn-sm" onClick={() => handleOpenModal(false)}>
+                        Add
+                    </button>
+                )}
             </div>
 
             {errors.message && (

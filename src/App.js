@@ -14,6 +14,8 @@ import UserLayout from "./layout/UserLayout";
 import Register from "./pages/Register";
 import { Spinner } from "react-bootstrap";
 import ManageUsers from "./pages/users/ManageUsers";
+import UnauthorizedAccess from "./components/UnauthorizedAccess";
+import ProtectedRoute from "./rbac/ProtectedRoute";
 
 function App() {
   // const [useDetails, setUserDetails] = useState(null);
@@ -84,11 +86,16 @@ function App() {
         </UserLayout> :
         <AppLayout><Error /></AppLayout>} />
       <Route path="/users" element={userDetails ?
-        <UserLayout>
-          <ManageUsers />
-        </UserLayout> :
+        <ProtectedRoute roles={['admin']}>
+          <UserLayout>
+            <ManageUsers />
+          </UserLayout>
+        </ProtectedRoute> :
         <Navigate to='/login' />
       } />
+      <Route path="/unauthorized-access" element= {userDetails ?
+        <UserLayout><UnauthorizedAccess /></UserLayout> :
+        <Navigate to="/login" />} />
     </Routes>
 
     
