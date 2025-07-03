@@ -13,6 +13,7 @@ import { SET_USER } from "./redux/user/actions";
 import UserLayout from "./layout/UserLayout";
 import Register from "./pages/Register";
 import { Spinner } from "react-bootstrap";
+import ManageUsers from "./pages/users/ManageUsers";
 
 function App() {
   // const [useDetails, setUserDetails] = useState(null);
@@ -56,9 +57,7 @@ function App() {
         </AppLayout>} 
       />
       <Route path="/login" element={userDetails ?
-        <UserLayout>
-          <Dashboard />
-        </UserLayout> :
+      <Navigate to="/dashboard" /> :
         <AppLayout>
           <Login />
         </AppLayout>} 
@@ -69,8 +68,8 @@ function App() {
           <Register />
         </AppLayout>
       } />
-      <Route path="/dashboard" 
-        element={userDetails ? <Dashboard /> :
+      <Route path="/dashboard" element={userDetails ?
+        <UserLayout><Dashboard /></UserLayout> :
         <Navigate to="/login" />}
       />
 
@@ -83,8 +82,13 @@ function App() {
         <UserLayout>
           <Error />
         </UserLayout> :
-        <AppLayout><Error /></AppLayout>}
-        />
+        <AppLayout><Error /></AppLayout>} />
+      <Route path="/users" element={userDetails ?
+        <UserLayout>
+          <ManageUsers />
+        </UserLayout> :
+        <Navigate to='/login' />
+      } />
     </Routes>
 
     

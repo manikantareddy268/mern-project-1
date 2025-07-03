@@ -178,7 +178,7 @@ function LinksDashboard() {
             <div className="d-flex justify-content-between mb-3">
                 <h2>Manage Affiliate Links</h2>
                 <button className="btn btn-primary btn-sm" onClick={() => handleOpenModal(false)}>
-                    {isEdit ? (<>Update Link</>) : (<>Add Link</>)}
+                    Add
                 </button>
             </div>
 
@@ -204,13 +204,14 @@ function LinksDashboard() {
                     sx={{
                         fontFamily: 'inherit'
                     }}
+                    density='compact'
                 />
             </div>
 
             <Modal show={showModal} onHide={() => handleCloseModal()}>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        Add Link
+                        {isEdit ? (<>Update Link</>) : (<>Add Link</>)}
                     </Modal.Title>
                 </Modal.Header>
 
