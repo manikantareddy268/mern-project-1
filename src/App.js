@@ -16,6 +16,7 @@ import { Spinner } from "react-bootstrap";
 import ManageUsers from "./pages/users/ManageUsers";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
 import ProtectedRoute from "./rbac/ProtectedRoute";
+import ManagePayment from "./pages/payments/ManagePayment.js";
 
 function App() {
   // const [useDetails, setUserDetails] = useState(null);
@@ -96,9 +97,10 @@ function App() {
       <Route path="/unauthorized-access" element= {userDetails ?
         <UserLayout><UnauthorizedAccess /></UserLayout> :
         <Navigate to="/login" />} />
+      <Route path="/manage-payments" element= {userDetails ?
+        <UserLayout><ManagePayment /></UserLayout> :
+        <Navigate to="/login" />} />
     </Routes>
-
-    
   );
 }
 
