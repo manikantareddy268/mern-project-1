@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home.js";
-import Login from "./pages/Login.js";
-import AppLayout from "./layout/AppLayout.js";
-import Dashboard from "./pages/Dashboard.js";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import AppLayout from "./layout/AppLayout";
+import Dashboard from "./pages/Dashboard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Error from "./pages/Error";
-import Logout from "./pages/Logout.js";
+import Logout from "./pages/Logout";
 import { serverEndpoint } from "./config/config";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_USER } from "./redux/user/actions";
@@ -17,9 +17,10 @@ import ManageUsers from "./pages/users/ManageUsers";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
 import ProtectedRoute from "./rbac/ProtectedRoute";
 import ManagePayments from "./pages/payments/ManagePayments";
+import AnalyticsDashboard from "./pages/links/AnalyticsDashboard";
 
 function App() {
-  // const [useDetails, setUserDetails] = useState(null);
+  // const [userDetails, setUserDetails] = useState(null);
   const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.userDetails);
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,6 @@ function App() {
       const response = await axios.post(`${serverEndpoint}/auth/is-user-logged-in`, {}, {
         withCredentials: true
       });
-      // updateUserDetails(response.data.user);
       dispatch({
         type: SET_USER,
         payload: response.data.user
@@ -51,19 +51,20 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={userDetails ? 
+      <Route path="/" element={userDetails ?
         <UserLayout>
           <Navigate to='/dashboard' />
         </UserLayout> :
         <AppLayout>
           <Home />
-        </AppLayout>} 
+        </AppLayout>
+      }
       />
       <Route path="/login" element={userDetails ?
-      <Navigate to="/dashboard" /> :
+        <Navigate to="/dashboard" /> :
         <AppLayout>
           <Login />
-        </AppLayout>} 
+        </AppLayout>}
       />
       <Route path="/register" element={userDetails ?
         <Navigate to='/dashboard' /> :
@@ -73,13 +74,11 @@ function App() {
       } />
       <Route path="/dashboard" element={userDetails ?
         <UserLayout><Dashboard /></UserLayout> :
-        <Navigate to="/login" />}
-      />
+        <Navigate to="/login" />} />
 
       <Route path="/logout" element={userDetails ?
         <Logout /> :
-        <Navigate to="/login" />}
-      />
+        <Navigate to="/login" />} />
 
       <Route path="/error" element={userDetails ?
         <UserLayout>
@@ -94,12 +93,18 @@ function App() {
         </ProtectedRoute> :
         <Navigate to='/login' />
       } />
-      <Route path="/unauthorized-access" element= {userDetails ?
+      <Route path="/unauthorized-access" element={userDetails ?
         <UserLayout><UnauthorizedAccess /></UserLayout> :
         <Navigate to="/login" />} />
-      <Route path="/manage-payments" element= {userDetails ?
+      <Route path="/manage-payments" element={userDetails ?
         <UserLayout><ManagePayments /></UserLayout> :
         <Navigate to="/login" />} />
+      <Route path="/analytics/:id" element={userDetails ?
+        <UserLayout>
+          <AnalyticsDashboard />
+        </UserLayout> :
+        <Navigate to="/login" />
+      } />
     </Routes>
   );
 }

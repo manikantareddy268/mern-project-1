@@ -2,15 +2,18 @@ import IconButton from '@mui/material/IconButton';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { serverEndpoint } from '../../config/config';
 import { Modal } from 'react-bootstrap';
 import { usePermission } from '../../rbac/userPermissions';
+import { useNavigate } from 'react-router-dom';
 
 function LinksDashboard() {
     const [errors, setErrors] = useState({});
     const [linksData, setLinksData] = useState([]);
+    const navigate = useNavigate();
 
     const [showModal, setShowModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -36,10 +39,10 @@ function LinksDashboard() {
             });
             await fetchLinks();
             handleCloseDeleteModal();
-            } catch (error) {
-                setErrors({ message: 'Unable to delete the link, please try again' });
-            }
-        };
+        } catch (error) {
+            setErrors({ message: 'Unable to delete the link, please try again' });
+        }
+    };
 
     const handleOpenModal = (isEdit, data = {}) => {
         if (isEdit) {
@@ -106,15 +109,18 @@ function LinksDashboard() {
                 original_url: formData.originalUrl,
                 category: formData.category
             };
-
             const configuration = {
                 withCredentials: true
             };
             try {
                 if (isEdit) {
-                    await axios.put(`${serverEndpoint}/links/${formData.id}`, body, configuration);
+                    await axios.put(
+                        `${serverEndpoint}/links/${formData.id}`,
+                        body, configuration);
                 } else {
-                    await axios.post(`${serverEndpoint}/links`, body, configuration);
+                    await axios.post(
+                        `${serverEndpoint}/links`,
+                        body, configuration);
                 }
 
                 await fetchLinks();
@@ -152,7 +158,7 @@ function LinksDashboard() {
         {
             field: 'originalUrl', headerName: 'URL', flex: 3, renderCell: (params) => (
                 <>
-                    <a href= {`${serverEndpoint}/links/r/${params.row._id}`}
+                    <a href={`${serverEndpoint}/links/r/${params.row._id}`}
                         target='_blank'
                         rel="noopener noreferrer"
                     >
@@ -177,6 +183,14 @@ function LinksDashboard() {
                             <DeleteIcon onClick={() => handleShowDeleteModal(params.row._id)} />
                         </IconButton>
                     )}
+
+                    {permission.canViewLink && (
+                        <IconButton>
+                            <AssessmentIcon onClick={() => {
+                                navigate(`/analytics/${params.row._id}`);
+                            }} />
+                        </IconButton>
+                    )}
                 </>
             )
         },
@@ -199,7 +213,7 @@ function LinksDashboard() {
                 </div>
             )}
 
-            <div style={{ height: 500, width: '100%'}}>
+            <div style={{ height: 500, width: '100%' }}>
                 <DataGrid
                     getRowId={(row) => row._id}
                     rows={linksData}
@@ -280,7 +294,7 @@ function LinksDashboard() {
                         </div>
 
                         <div className="d-grid">
-                            <button type="submit" className="btn btn-primary">Submit</button> 
+                            <button type="submit" className="btn btn-primary">Submit</button>
                         </div>
                     </form>
                 </Modal.Body>
@@ -304,7 +318,6 @@ function LinksDashboard() {
                     >
                         Delete
                     </button>
-
                 </Modal.Footer>
             </Modal>
         </div>
